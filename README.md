@@ -16,6 +16,7 @@ A desktop-based Invoice Automation system built using **Python** and **CustomTki
 
 ## 📁 Project Structure
 
+```bash
 Invoice_Automation/
 ├── controller/ # Handles logic
 ├── custom_widgets/ # Custom UI components
@@ -27,6 +28,7 @@ Invoice_Automation/
 ├── app_config.py # Configuration
 ├── main.py # Entry point
 ├── requirements.txt # Python dependencies
+```
 
 
 ---
