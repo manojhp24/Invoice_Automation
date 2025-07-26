@@ -1,0 +1,7 @@
+
+
+APP_NAME = "Invoice Automation"
+WINDOW_WIDTH = 1000
+WINDOW_HEIGHT = 600
+PRIMARY_COLOR = "#1f6aa5"
+
