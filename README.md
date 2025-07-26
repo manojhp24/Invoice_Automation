@@ -42,12 +42,12 @@ git clone https://github.com/manojhp24/Invoice_Automation.git
 cd Invoice_Automation
 ```
 
-##Create and activate a virtual environment
+## Create and activate a virtual environment
 ```bash
 python -m venv venv
 ```
 
-# Activate virtual environment
+Activate virtual environment
 # On Windows:
 venv\Scripts\activate
 # On Linux/Mac:
