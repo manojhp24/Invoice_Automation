@@ -48,14 +48,16 @@ python -m venv venv
 ```
 
 Activate virtual environment
-# On Windows:
+### On Windows:
 venv\Scripts\activate
-# On Linux/Mac:
+### On Linux/Mac:
 source venv/bin/activate
 
-## Install dependencies
+### Install dependencies
+```bash
 pip install -r requirements.txt
+```
 
-## Run the application
+### Run the application
 python main.py
 
