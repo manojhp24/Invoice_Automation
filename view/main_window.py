@@ -40,6 +40,9 @@ class MainWindow(ctk.CTk):
         self.scrollable_main = ctk.CTkScrollableFrame(self, corner_radius=10)
         self.scrollable_main.grid(row=0, column=1, sticky="nsew", padx=20, pady=20)
 
+        # ⬇ Add this line
+        self.scrollable_main.bind_all("<MouseWheel>", self._on_mousewheel)
+
         self.navigate("Create Invoice", InvoiceForm)
 
     def navigate(self, name, ViewClass):
@@ -56,6 +59,9 @@ class MainWindow(ctk.CTk):
             self.view_cache[name] = view
 
         view.pack(fill="both", expand=True)
+
+    def _on_mousewheel(self, event):
+        self.scrollable_main._parent_canvas.yview_scroll(-int(event.delta / 1.3), "units")
 
     def clear_main_content(self):
         for view in self.view_cache.values():

@@ -1,10 +1,19 @@
+import os
 from docxtpl import DocxTemplate
 from datetime import datetime
 from docx2pdf import convert
 
 
-def generate_invoice_pdf(invoice_data, template_path="invoice_template/invoice_template.docx",
-                         output_path="invoice_output.docx"):
+def generate_invoice_pdf(invoice_data, template_path="invoice_template/invoice_template.docx",progress_callback = None):
+
+    if progress_callback: progress_callback(0.1)
+    desktop_path = os.path.join(os.path.expanduser('~'), 'Desktop')
+    output_docx = os.path.join(desktop_path, f"invoice_{invoice_data['customer_name']}.docx")
+    output_pdf = output_docx.replace('.docx', '.pdf')
+
+
+    if progress_callback: progress_callback(0.3)
+
     doc = DocxTemplate(template_path)
 
     context = {
@@ -19,10 +28,13 @@ def generate_invoice_pdf(invoice_data, template_path="invoice_template/invoice_t
     }
 
     doc.render(context)
-    doc.save(output_path)
+    if progress_callback:progress_callback(0.6)
 
-    output_pdf = output_path.replace(".docx", ".pdf")
-    convert(output_path, output_pdf)
+    doc.save(output_docx)
+    if progress_callback:progress_callback(0.8)
+
+    convert(output_docx, output_pdf)
+    if progress_callback:progress_callback(1.0)
 
     print("Invoice PDF generated at:", output_pdf)
 
