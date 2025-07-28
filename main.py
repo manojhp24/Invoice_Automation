@@ -13,7 +13,6 @@ def main():
     app = MainWindow()
     app.title(APP_NAME)
     app.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
-
     app.mainloop()
 
 
