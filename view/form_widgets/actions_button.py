@@ -1,11 +1,16 @@
 import customtkinter as ctk
 
-def create_actions_button(self,controller):
+def create_actions_button(self, controller):
+    # Prevent multiple renders
+    if hasattr(self, "actions_created") and self.actions_created:
+        return
+
+    self.actions_created = True
+    self.controller = controller
 
     actions_container = ctk.CTkFrame(self, fg_color="transparent")
     actions_container.grid(row=13, column=0, columnspan=4, pady=(30, 40))
 
-    # Section header
     actions_header = ctk.CTkLabel(
         actions_container,
         text="🚀 Actions",
@@ -14,7 +19,6 @@ def create_actions_button(self,controller):
     )
     actions_header.grid(row=0, column=0, columnspan=4, pady=(0, 20))
 
-    # Button container with proper grid layout
     button_frame = ctk.CTkFrame(
         actions_container,
         fg_color=("white", "gray15"),
@@ -23,11 +27,8 @@ def create_actions_button(self,controller):
         border_color=("gray85", "gray25")
     )
     button_frame.grid(row=1, column=0, columnspan=4, padx=20, pady=10, sticky="ew")
-
-    # Configure columns for even spacing
     button_frame.grid_columnconfigure((0, 1, 2, 3), weight=1)
 
-    # Save Draft button
     save_draft_btn = ctk.CTkButton(
         button_frame,
         text="💾 Save Draft",
@@ -41,7 +42,6 @@ def create_actions_button(self,controller):
     )
     save_draft_btn.grid(row=0, column=0, padx=20, pady=20, sticky="ew")
 
-    # Preview Button
     preview_button = ctk.CTkButton(
         button_frame,
         text="👁️ Preview Invoice",
@@ -51,11 +51,11 @@ def create_actions_button(self,controller):
         fg_color=("#007bff", "#0056b3"),
         hover_color=("#0056b3", "#004085"),
         corner_radius=8,
-        text_color="white"
+        text_color="white",
+        command=self.controller.preview_invoice
     )
     preview_button.grid(row=0, column=1, padx=20, pady=20, sticky="ew")
 
-    # Clear Form button
     clear_button = ctk.CTkButton(
         button_frame,
         text="🗑️ Clear Form",
@@ -70,7 +70,6 @@ def create_actions_button(self,controller):
     )
     clear_button.grid(row=0, column=2, padx=20, pady=20, sticky="ew")
 
-    # Generate Invoice Button (Main CTA)
     create_invoice_button = ctk.CTkButton(
         button_frame,
         text="✨ Generate Invoice",
@@ -85,24 +84,19 @@ def create_actions_button(self,controller):
     )
     create_invoice_button.grid(row=0, column=3, padx=20, pady=20, sticky="ew")
 
-    # Configure the main actions container to expand properly
     actions_container.grid_columnconfigure(0, weight=1)
 
-    # Add hover effects
+    # Hover effects
     def on_hover_enter(button):
         def handler(event):
             button.configure(cursor="hand2")
-
         return handler
 
     def on_hover_leave(button):
         def handler(event):
             button.configure(cursor="")
-
         return handler
 
-    # Apply hover effects to all buttons
-    buttons = [save_draft_btn, preview_button, clear_button, create_invoice_button]
-    for btn in buttons:
+    for btn in [save_draft_btn, preview_button, clear_button, create_invoice_button]:
         btn.bind("<Enter>", on_hover_enter(btn))
         btn.bind("<Leave>", on_hover_leave(btn))

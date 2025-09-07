@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from view.invoice_form import InvoiceForm
+from view.invoice_list import InvoiceList
 
 class MainWindow(ctk.CTk):
     def __init__(self):
@@ -20,7 +21,7 @@ class MainWindow(ctk.CTk):
         self.nav_buttons = {}
         nav_items = {
             "Create Invoice": InvoiceForm,
-            "Invoice List": ""
+            "Invoice List": InvoiceList
         }
 
         for name, ViewClass in nav_items.items():
@@ -40,7 +41,6 @@ class MainWindow(ctk.CTk):
         self.scrollable_main = ctk.CTkScrollableFrame(self, corner_radius=10)
         self.scrollable_main.grid(row=0, column=1, sticky="nsew", padx=20, pady=20)
 
-        # ⬇ Add this line
         self.scrollable_main.bind_all("<MouseWheel>", self._on_mousewheel)
 
         self.navigate("Create Invoice", InvoiceForm)

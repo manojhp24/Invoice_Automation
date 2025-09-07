@@ -12,6 +12,82 @@ class ItemController:
         self.invoiceRepo = InvoiceRepository()
         self.items = []
 
+    def preview_invoice(self):
+        if not self.items:
+            messagebox.showwarning("Preview", "No items added to preview.")
+            return
+
+        # Collect customer + items data
+        customer_name = self.view.customer_name.get()
+        customer_mobile = self.view.customer_mobile.get()
+        address = self.view.address.get()
+        customer_email = self.view.customer_email.get()
+        customer_gst = self.view.gst_entry.get()
+
+        invoice_data = {
+            "customer_name": customer_name,
+            "address": address,
+            "mobile": customer_mobile,
+            "email": customer_email,
+            "customer_gst": customer_gst,
+            "invoice_no": "PREVIEW",
+            "items": [
+                {
+                    "name": item.name,
+                    "rate": item.rate,
+                    "quantity": item.quantity,
+                    "amount": item.amount,
+                }
+                for item in self.items
+            ],
+            "gross_total": sum(item.amount for item in self.items),
+            "total": sum(item.amount for item in self.items) * 1.18
+        }
+
+        # Tkinter popup window
+        import customtkinter as ctk
+        preview_win = ctk.CTkToplevel(self.view)
+        preview_win.title("Invoice Preview")
+        preview_win.geometry("650x500")
+        preview_win.grab_set()
+
+        header = ctk.CTkLabel(
+            preview_win,
+            text="📄 Invoice Preview",
+            font=ctk.CTkFont(size=18, weight="bold"),
+            text_color=("#0D47A1", "#00C2CB")
+        )
+        header.pack(pady=(20, 10))
+
+        ctk.CTkFrame(preview_win, height=2, fg_color=("#007bff", "#00C2CB")).pack(fill="x", padx=20, pady=(0, 20))
+
+        content_frame = ctk.CTkScrollableFrame(preview_win, width=600, height=350)
+        content_frame.pack(fill="both", expand=True, padx=20, pady=10)
+
+        # Show customer details
+        ctk.CTkLabel(content_frame, text=f"Customer: {invoice_data['customer_name']}", font=ctk.CTkFont(size=14)).pack(
+            anchor="w", pady=2)
+        ctk.CTkLabel(content_frame, text=f"Mobile: {invoice_data['mobile']}", font=ctk.CTkFont(size=14)).pack(
+            anchor="w", pady=2)
+        ctk.CTkLabel(content_frame, text=f"Address: {invoice_data['address']}", font=ctk.CTkFont(size=14)).pack(
+            anchor="w", pady=2)
+
+        # Items header
+        ctk.CTkLabel(content_frame, text="\nItems:", font=ctk.CTkFont(size=14, weight="bold")).pack(anchor="w", pady=5)
+
+        for item in invoice_data["items"]:
+            ctk.CTkLabel(content_frame,
+                         text=f"{item['name']} | Qty: {item['quantity']} | Rate: {item['rate']} | Amount: {item['amount']}",
+                         font=ctk.CTkFont(size=13)).pack(anchor="w", pady=1)
+
+        # Totals
+        ctk.CTkLabel(content_frame, text=f"\nGross Total: {invoice_data['gross_total']:.2f}",
+                     font=ctk.CTkFont(size=14, weight="bold")).pack(anchor="e", pady=5)
+        ctk.CTkLabel(content_frame, text=f"Final Total (incl. GST): {invoice_data['total']:.2f}",
+                     font=ctk.CTkFont(size=14, weight="bold")).pack(anchor="e", pady=5)
+
+        ctk.CTkButton(preview_win, text="Close", command=preview_win.destroy).pack(pady=15)
+
     def clear_form(self):
         self.view.customer_name.delete(0, 'end')
         self.view.customer_mobile.delete(0, 'end')
@@ -49,6 +125,7 @@ class ItemController:
         customer_mobile = self.view.customer_mobile.get()
         address = self.view.address.get()
         customer_email = self.view.customer_email.get()
+        customer_gst = self.view.gst_entry.get()
 
         if not customer_name or not customer_mobile or not address:
             messagebox.showerror("Error", "Please fill in all required fields.")
@@ -65,8 +142,13 @@ class ItemController:
             self.view.popup_progress_bar.set(value)
             self.view.update_idletasks()
 
-        customer = Customer(name=customer_name, mobile=customer_mobile, address=address, email=customer_email)
-        customer_id = self.invoiceRepo.save_customer(customer)
+        customer = Customer(name=customer_name, mobile=customer_mobile, address=address, email=customer_email,customer_gst=customer_gst)
+
+        if customer.customer_gst and customer.customer_gst.strip():
+            customer_id = self.invoiceRepo.save_customer(customer)
+        else:
+            customer_id = self.invoiceRepo.save_no_gst_customer(customer)
+
         invoice_id = self.invoiceRepo.save_invoice(customer_id, datetime.now().strftime("%Y-%m-%d"))
 
         for item in self.items:
@@ -77,6 +159,7 @@ class ItemController:
             "customer_name": customer.name,
             "address": customer.address,
             "mobile": customer.mobile,
+            "customer_gst":customer.customer_gst,
             "invoice_no": invoice_id,
             "items": [
                 {

@@ -1,127 +1,120 @@
 import customtkinter as ctk
 
 def create_customer_section(self):
-    """Create enhanced customer information section with modern card design"""
-    # Section header with icon and improved typography
+    """Enhanced customer section with modern UI and layout"""
+
+    # Header Frame
     customer_header_frame = ctk.CTkFrame(self, fg_color="transparent")
-    customer_header_frame.grid(row=1, column=0, columnspan=4, sticky="ew", padx=20, pady=(20, 10))
+    customer_header_frame.grid(row=1, column=0, columnspan=4, sticky="ew", padx=25, pady=(25, 15))
     customer_header_frame.grid_columnconfigure(0, weight=1)
 
+    # Header Text
     customer_header = ctk.CTkLabel(
         customer_header_frame,
         text="👤 Customer Information",
-        font=ctk.CTkFont(size=18, weight="bold"),
-        text_color=("#2E8B57", "#40E0D0")
+        font=ctk.CTkFont(size=20, weight="bold"),
+        text_color=("#0D47A1", "#00C2CB")
     )
     customer_header.grid(row=0, column=0, sticky="w")
 
-    # Subtitle for section
-    customer_subtitle = ctk.CTkLabel(
-        customer_header_frame,
-        text="Enter your client's contact details and information",
-        font=ctk.CTkFont(size=11),
-        text_color=("gray50", "gray60")
+    # Accent underline
+    ctk.CTkFrame(customer_header_frame, height=2, fg_color=("#007bff", "#00C2CB")).grid(
+        row=1, column=0, sticky="ew", pady=(6, 0)
     )
-    customer_subtitle.grid(row=1, column=0, sticky="w", pady=(2, 0))
 
-    # Enhanced customer frame with modern card design
+    # Main Form Frame
     customer_frame = ctk.CTkFrame(
         self,
-        fg_color=("white", "gray15"),
-        corner_radius=15,
-        border_width=1,
-        border_color=("gray85", "gray25")
+        fg_color=("#FAFAFA", "#1A1A1A"),
+        corner_radius=16,
+        border_width=2,
+        border_color=("#E0E0E0", "#333333")
     )
-    customer_frame.grid(row=2, column=0, columnspan=4, sticky="ew", padx=20, pady=(10, 20))
-    customer_frame.grid_columnconfigure(1, weight=1)
-    customer_frame.grid_columnconfigure(3, weight=1)
+    customer_frame.grid(row=2, column=0, columnspan=4, sticky="ew", padx=25, pady=(15, 30))
+    customer_frame.grid_columnconfigure((0, 2), weight=1, uniform=1)
 
-    # Row 1: Customer Name and Address
-    # Customer Name
-    name_label = ctk.CTkLabel(
-        customer_frame,
-        text="Customer Name *",
-        font=ctk.CTkFont(size=13, weight="bold"),
-        text_color=("#2E4057", "#E8E8E8")
-    )
+    entry_fg = ("#FFFFFF", "#0F0F0F")
+    entry_border = ("#B0B0B0", "#444444")
+
+    # --- Row 1 ---
+    name_label = ctk.CTkLabel(customer_frame, text="Customer Name *",
+                              font=ctk.CTkFont(size=13, weight="bold"),
+                              text_color=("#212121", "#E8E8E8"))
     name_label.grid(row=0, column=0, padx=20, pady=(20, 8), sticky="w")
 
-    self.customer_name = ctk.CTkEntry(
-        customer_frame,
-        width=280,
-        height=40,
-        placeholder_text="Enter full customer name",
-        font=ctk.CTkFont(size=12),
-        corner_radius=8,
-        border_width=2,
-        border_color=("gray80", "gray30"),
-        fg_color=("gray95", "gray10")
-    )
-    self.customer_name.grid(row=1, column=0, padx=20, pady=(0, 15), sticky="ew")
+    self.customer_name = ctk.CTkEntry(customer_frame,
+                                      placeholder_text="Enter Customer Name",
+                                      font=ctk.CTkFont(size=12),
+                                      height=38,
+                                      corner_radius=10,
+                                      border_width=2,
+                                      border_color=entry_border,
+                                      fg_color=entry_fg)
+    self.customer_name.grid(row=1, column=0, padx=20, pady=(0, 18), sticky="ew")
 
-    # Address
-    address_label = ctk.CTkLabel(
-        customer_frame,
-        text="Address *",
-        font=ctk.CTkFont(size=13, weight="bold"),
-        text_color=("#2E4057", "#E8E8E8")
-    )
-    address_label.grid(row=0, column=2, padx=(20, 20), pady=(20, 8), sticky="w")
+    address_label = ctk.CTkLabel(customer_frame, text="Address *",
+                                 font=ctk.CTkFont(size=13, weight="bold"),
+                                 text_color=("#212121", "#E8E8E8"))
+    address_label.grid(row=0, column=2, padx=20, pady=(20, 8), sticky="w")
 
-    self.address = ctk.CTkEntry(
-        customer_frame,
-        width=280,
-        height=40,
-        placeholder_text="Enter customer address",
-        font=ctk.CTkFont(size=12),
-        corner_radius=8,
-        border_width=2,
-        border_color=("gray80", "gray30"),
-        fg_color=("gray95", "gray10")
-    )
-    self.address.grid(row=1, column=2, padx=(20, 20), pady=(0, 15), sticky="ew")
+    self.address = ctk.CTkEntry(customer_frame,
+                                placeholder_text="Enter Address",
+                                font=ctk.CTkFont(size=12),
+                                height=38,
+                                corner_radius=10,
+                                border_width=2,
+                                border_color=entry_border,
+                                fg_color=entry_fg)
+    self.address.grid(row=1, column=2, padx=20, pady=(0, 18), sticky="ew")
 
-    # Row 2: Mobile Number and Email
-    # Mobile Number
-    mobile_label = ctk.CTkLabel(
-        customer_frame,
-        text="Mobile Number *",
-        font=ctk.CTkFont(size=13, weight="bold"),
-        text_color=("#2E4057", "#E8E8E8")
-    )
+    # --- Row 2 ---
+    mobile_label = ctk.CTkLabel(customer_frame, text="Mobile Number *",
+                                font=ctk.CTkFont(size=13, weight="bold"),
+                                text_color=("#212121", "#E8E8E8"))
     mobile_label.grid(row=2, column=0, padx=20, pady=(5, 8), sticky="w")
 
-    self.customer_mobile = ctk.CTkEntry(
-        customer_frame,
-        width=280,
-        height=40,
-        placeholder_text="Enter mobile number",
-        font=ctk.CTkFont(size=12),
-        corner_radius=8,
-        border_width=2,
-        border_color=("gray80", "gray30"),
-        fg_color=("gray95", "gray10")
-    )
-    self.customer_mobile.grid(row=3, column=0, padx=20, pady=(0, 20), sticky="ew")
+    self.customer_mobile = ctk.CTkEntry(customer_frame,
+                                        placeholder_text="Enter Contact Number",
+                                        font=ctk.CTkFont(size=12),
+                                        height=38,
+                                        corner_radius=10,
+                                        border_width=2,
+                                        border_color=entry_border,
+                                        fg_color=entry_fg)
+    self.customer_mobile.grid(row=3, column=0, padx=20, pady=(0, 18), sticky="ew")
 
-    # Email
-    email_label = ctk.CTkLabel(
-        customer_frame,
-        text="Email Address",
-        font=ctk.CTkFont(size=13, weight="bold"),
-        text_color=("#2E4057", "#E8E8E8")
-    )
-    email_label.grid(row=2, column=2, padx=(20, 20), pady=(5, 8), sticky="w")
+    email_label = ctk.CTkLabel(customer_frame, text="Email Address",
+                               font=ctk.CTkFont(size=13, weight="bold"),
+                               text_color=("#212121", "#E8E8E8"))
+    email_label.grid(row=2, column=2, padx=20, pady=(5, 8), sticky="w")
 
-    self.customer_email = ctk.CTkEntry(
-        customer_frame,
-        width=280,
-        height=40,
-        placeholder_text="Enter email address (optional)",
-        font=ctk.CTkFont(size=12),
-        corner_radius=8,
-        border_width=2,
-        border_color=("gray80", "gray30"),
-        fg_color=("gray95", "gray10")
-    )
-    self.customer_email.grid(row=3, column=2, padx=(20, 20), pady=(0, 20), sticky="ew")
+    self.customer_email = ctk.CTkEntry(customer_frame,
+                                       placeholder_text="Enter Email (Optional)",
+                                       font=ctk.CTkFont(size=12),
+                                       height=38,
+                                       corner_radius=10,
+                                       border_width=2,
+                                       border_color=entry_border,
+                                       fg_color=entry_fg)
+    self.customer_email.grid(row=3, column=2, padx=20, pady=(0, 18), sticky="ew")
+
+    # --- Row 3 ---
+    gst_label = ctk.CTkLabel(customer_frame, text="GST",
+                             font=ctk.CTkFont(size=13, weight="bold"),
+                             text_color=("#212121", "#E8E8E8"))
+    gst_label.grid(row=4, column=0, padx=20, pady=(5, 8), sticky="w")
+
+    self.gst_entry = ctk.CTkEntry(customer_frame,
+                                  placeholder_text="Enter GST",
+                                  font=ctk.CTkFont(size=12),
+                                  height=38,
+                                  corner_radius=10,
+                                  border_width=2,
+                                  border_color=entry_border,
+                                  fg_color=entry_fg)
+    self.gst_entry.grid(row=5, column=0, padx=20, pady=(0, 25), sticky="ew")
+
+    # Focus highlight
+    for field in [self.customer_name, self.address, self.customer_mobile, self.customer_email, self.gst_entry]:
+        field.bind("<FocusIn>", lambda e, f=field: f.configure(border_color="#00BFFF"))
+        field.bind("<FocusOut>", lambda e, f=field: f.configure(border_color=entry_border))

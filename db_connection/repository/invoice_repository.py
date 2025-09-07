@@ -1,6 +1,6 @@
 from db_connection.connection import get_connection
 from db_connection.queries.queries import (SAVE_INVOICE, SAVE_INVOICE_ITEMS, SAVE_CUSTOMER, SAVE_PRODUCT_IF_NOT_EXISTS,
-                                           GET_PRODUCT_ID)
+                                           GET_PRODUCT_ID,SAVE_NO_GST_CUSTOMER)
 
 
 class InvoiceRepository:
@@ -9,7 +9,7 @@ class InvoiceRepository:
         self.cur = self.conn.cursor()
 
     def save_customer(self, customer):
-        self.cur.execute(SAVE_CUSTOMER, (customer.name, customer.mobile, customer.email, customer.address))
+        self.cur.execute(SAVE_CUSTOMER, (customer.name, customer.mobile, customer.email, customer.address,customer.customer_gst))
         self.conn.commit()
         return self.cur.lastrowid
 
@@ -31,6 +31,9 @@ class InvoiceRepository:
     def save_invoice_item(self, invoice_id, product_id, quantity, rate, amount):
         self.cur.execute(SAVE_INVOICE_ITEMS, (invoice_id, product_id, quantity, rate, amount))
         self.conn.commit()
+
+    def save_no_gst_customer(self,customer):
+        self.cur.execute(SAVE_NO_GST_CUSTOMER,(customer.name, customer.mobile, customer.email, customer.address))
 
     def close(self):
         self.conn.close()

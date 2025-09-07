@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS customer (
   name TEXT NOT NULL,
   mobile TEXT,
   email TEXT,
-  address TEXT
+  address TEXT,
+  customer_gst TEXT
 );
 
 """
@@ -39,4 +40,14 @@ CREATE TABLE IF NOT EXISTS invoice_items (
   FOREIGN KEY (invoice_id) REFERENCES invoices(id),
   FOREIGN KEY (product_id) REFERENCES products(id)
 );
+"""
+
+CREATE_NO_GST_CUSTOMER = """
+CREATE TABLE IF NOT EXISTS no_gst_customer(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  mobile TEXT,
+  email TEXT,
+  address TEXT
+  );
 """
