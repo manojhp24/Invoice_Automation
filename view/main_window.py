@@ -2,6 +2,7 @@ import customtkinter as ctk
 from view.invoice_form import InvoiceForm
 from view.invoice_list import InvoiceList
 
+
 class MainWindow(ctk.CTk):
     def __init__(self):
         super().__init__()
@@ -12,12 +13,35 @@ class MainWindow(ctk.CTk):
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
 
-        # Sidebar
-        self.sidebar = ctk.CTkFrame(self, width=200, corner_radius=0)
+        # Sidebar - Enhanced with better styling
+        self.sidebar = ctk.CTkFrame(
+            self,
+            width=220,
+            corner_radius=0,
+            fg_color="#2A2D37"
+        )
         self.sidebar.grid(row=0, column=0, sticky="ns")
-        ctk.CTkLabel(self.sidebar, text="Dashboard", font=("Arial", 18, "bold")).pack(pady=20)
+        self.sidebar.grid_propagate(False)  # Prevent width changes
 
-        # Sidebar buttons
+        # Sidebar header with improved styling
+        sidebar_header = ctk.CTkFrame(
+            self.sidebar,
+            height=80,
+            corner_radius=0,
+            fg_color="#1E2027"
+        )
+        sidebar_header.pack(fill="x", pady=0)
+        sidebar_header.pack_propagate(False)
+
+        ctk.CTkLabel(
+            sidebar_header,
+            text="Invoice Manager",
+            font=("Arial", 18, "bold"),
+            text_color="#E4E4E4"
+        ).pack(expand=True)
+
+
+        # Sidebar buttons with enhanced styling
         self.nav_buttons = {}
         nav_items = {
             "Create Invoice": InvoiceForm,
@@ -30,12 +54,34 @@ class MainWindow(ctk.CTk):
                 text=name,
                 command=lambda c=ViewClass, n=name: self.navigate(n, c),
                 fg_color="transparent",
-                hover_color="#2E2E3E",
+                hover_color="#3A3E4B",
                 anchor="w",
-                width=180
+                width=200,
+                height=40,
+                corner_radius=8,
+                border_spacing=10,
+                font=("Arial", 14),
+                text_color="#E4E4E4"
             )
-            btn.pack(pady=5, padx=10)
+            btn.pack(pady=10, padx=20)
             self.nav_buttons[name] = btn
+
+        # Add a decorative footer to the sidebar
+        sidebar_footer = ctk.CTkFrame(
+            self.sidebar,
+            height=50,
+            corner_radius=0,
+            fg_color="transparent"
+        )
+        sidebar_footer.pack(side="bottom", fill="x", pady=(0, 10))
+
+        # Add a subtle separator
+        separator = ctk.CTkFrame(
+            self.sidebar,
+            height=1,
+            fg_color="#3A3E4B"
+        )
+        separator.pack(fill="x", padx=10, pady=20)
 
         # Main content area
         self.scrollable_main = ctk.CTkScrollableFrame(self, corner_radius=10)
@@ -48,7 +94,7 @@ class MainWindow(ctk.CTk):
     def navigate(self, name, ViewClass):
         for btn in self.nav_buttons.values():
             btn.configure(fg_color="transparent")
-        self.nav_buttons[name].configure(fg_color="#3E3E4E")
+        self.nav_buttons[name].configure(fg_color="#4C78E8")  # More vibrant active color
 
         self.clear_main_content()
 

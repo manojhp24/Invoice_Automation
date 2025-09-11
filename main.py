@@ -4,6 +4,7 @@ from app_config import APP_NAME, WINDOW_WIDTH, WINDOW_HEIGHT
 from db_connection.init_db import initialize_db
 
 
+
 def main():
     initialize_db()
 

@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS customer (
   mobile TEXT,
   email TEXT,
   address TEXT,
-  customer_gst TEXT
+  customer_gst TEXT  
 );
 
 """
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS customer (
 CREATE_PRODUCTS_TABLE = """
 CREATE TABLE IF NOT EXISTS products (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT,
+  name TEXT NOT NULL,
   price REAL NOT NULL
 );
 
@@ -22,8 +22,8 @@ CREATE TABLE IF NOT EXISTS products (
 CREATE_INVOICE_TABLE = """
 CREATE TABLE IF NOT EXISTS invoices (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  customer_id INTEGER,
-  date TEXT,
+  customer_id INTEGER NOT NULL,
+  date TEXT NOT NULL,
   FOREIGN KEY (customer_id) REFERENCES customer(id)
 );
 
@@ -32,22 +32,13 @@ CREATE TABLE IF NOT EXISTS invoices (
 CREATE_INVOICE_ITEMS = """
 CREATE TABLE IF NOT EXISTS invoice_items (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  invoice_id INTEGER,
-  product_id INTEGER,
-  quantity INTEGER,
-  rate REAL,
-  amount REAL,
+  invoice_id INTEGER NOT NULL,
+  product_id INTEGER NOT NULL,
+  quantity INTEGER NOT NULL,
+  rate REAL NOT NULL,
+  amount REAL NOT NULL,
   FOREIGN KEY (invoice_id) REFERENCES invoices(id),
   FOREIGN KEY (product_id) REFERENCES products(id)
 );
 """
 
-CREATE_NO_GST_CUSTOMER = """
-CREATE TABLE IF NOT EXISTS no_gst_customer(
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  mobile TEXT,
-  email TEXT,
-  address TEXT
-  );
-"""

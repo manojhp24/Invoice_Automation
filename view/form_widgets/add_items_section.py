@@ -1,7 +1,23 @@
 import customtkinter as ctk
 
+
 def add_item_section(self):
-    """Enhanced item entry section with modern UI and styling"""
+    """Enhanced item entry section with sidebar color scheme"""
+
+    # Color scheme matching the sidebar
+    colors = {
+        "primary": ("#4C78E8", "#4C78E8"),  # Sidebar active button color
+        "secondary": ("#3A3E4B", "#3A3E4B"),  # Sidebar hover color
+        "background": ("#2A2D37", "#2A2D37"),  # Sidebar background
+        "border": ("#3A3E4B", "#3A3E4B"),  # Sidebar elements border
+        "entry_bg": ("#1E2027", "#1E2027"),  # Darker than sidebar background
+        "entry_border": ("#3A3E4B", "#3A3E4B"),  # Matching sidebar elements
+        "text_primary": ("#E4E4E4", "#E4E4E4"),  # Sidebar text color
+        "text_secondary": ("#8A8D93", "#8A8D93"),  # Sidebar secondary text
+        "success": ("#4C78E8", "#4C78E8"),  # Using primary color for button
+        "success_hover": ("#3A66D0", "#3A66D0"),  # Darker shade of primary
+        "focus": ("#00BFFF", "#00BFFF")  # Keeping focus highlight
+    }
 
     # Header
     item_header_frame = ctk.CTkFrame(self, fg_color="transparent")
@@ -11,87 +27,84 @@ def add_item_section(self):
         item_header_frame,
         text="➕ Add Items",
         font=ctk.CTkFont(size=18, weight="bold"),
-        text_color=("#0D47A1", "#00C2CB")
+        text_color=colors["primary"]
     )
     item_header.grid(row=0, column=0, sticky="w")
 
     # Accent underline
-    ctk.CTkFrame(item_header_frame, height=2, fg_color=("#007bff", "#00C2CB")).grid(
+    ctk.CTkFrame(item_header_frame, height=2, fg_color=colors["primary"]).grid(
         row=1, column=0, sticky="ew", pady=(6, 0)
     )
 
     # Main Frame
     items_frame = ctk.CTkFrame(
         self,
-        fg_color=("#FAFAFA", "#1A1A1A"),
-        corner_radius=16,
-        border_width=2,
-        border_color=("#E0E0E0", "#333333")
+        fg_color=colors["background"],
+        corner_radius=12,
+        border_width=1,
+        border_color=colors["border"]
     )
     items_frame.grid(row=5, column=0, columnspan=4, sticky="ew", padx=25, pady=(15, 30))
     items_frame.grid_columnconfigure((0, 1, 2, 3), weight=1, uniform=1)
 
-    entry_fg = ("#FFFFFF", "#0F0F0F")
-    entry_border = ("#B0B0B0", "#444444")
+    # Create field configuration
+    field_config = [
+        {"label": "Item Name *", "placeholder": "Product Name", "var_name": "item_name", "col": 0},
+        {"label": "Quantity *", "placeholder": "Qty", "var_name": "item_quantity", "col": 1},
+        {"label": "Rate *", "placeholder": "Price", "var_name": "item_rate", "col": 2}
+    ]
 
-    # Item Name
-    item_name_label = ctk.CTkLabel(items_frame, text="Item Name *",
-                                   font=ctk.CTkFont(size=12, weight="bold"),
-                                   text_color=("#212121", "#E8E8E8"))
-    item_name_label.grid(row=0, column=0, padx=(20, 10), pady=(20, 8), sticky="w")
+    # Create entry fields
+    for config in field_config:
+        # Label
+        label = ctk.CTkLabel(
+            items_frame,
+            text=config["label"],
+            font=ctk.CTkFont(size=12, weight="bold"),
+            text_color=colors["text_primary"]
+        )
+        label.grid(
+            row=0,
+            column=config["col"],
+            padx=(20 if config["col"] == 0 else 10, 10 if config["col"] == 2 else 20),
+            pady=(20, 8),
+            sticky="w"
+        )
 
-    self.item_name = ctk.CTkEntry(
-        items_frame,
-        placeholder_text="E.g., Web Design",
-        font=ctk.CTkFont(size=12),
-        height=38,
-        corner_radius=10,
-        border_width=2,
-        border_color=entry_border,
-        fg_color=entry_fg
-    )
-    self.item_name.grid(row=1, column=0, padx=(20, 10), pady=(0, 18), sticky="ew")
+        # Entry field
+        entry = ctk.CTkEntry(
+            items_frame,
+            placeholder_text=config["placeholder"],
+            font=ctk.CTkFont(size=12),
+            height=38,
+            corner_radius=8,
+            border_width=1,
+            border_color=colors["entry_border"],
+            fg_color=colors["entry_bg"],
+            text_color=colors["text_primary"]
+        )
+        entry.grid(
+            row=1,
+            column=config["col"],
+            padx=(20 if config["col"] == 0 else 10, 10 if config["col"] == 2 else 20),
+            pady=(0, 18),
+            sticky="ew"
+        )
 
-    # Quantity
-    quantity_label = ctk.CTkLabel(items_frame, text="Quantity *",
-                                  font=ctk.CTkFont(size=12, weight="bold"),
-                                  text_color=("#212121", "#E8E8E8"))
-    quantity_label.grid(row=0, column=1, padx=10, pady=(20, 8), sticky="w")
+        # Set as instance variable
+        setattr(self, config["var_name"], entry)
 
-    self.item_quantity = ctk.CTkEntry(
-        items_frame,
-        placeholder_text="Qty",
-        font=ctk.CTkFont(size=12),
-        height=38,
-        corner_radius=10,
-        border_width=2,
-        border_color=entry_border,
-        fg_color=entry_fg
-    )
-    self.item_quantity.grid(row=1, column=1, padx=10, pady=(0, 18), sticky="ew")
-
-    # Rate
-    rate_label = ctk.CTkLabel(items_frame, text="Rate *",
-                              font=ctk.CTkFont(size=12, weight="bold"),
-                              text_color=("#212121", "#E8E8E8"))
-    rate_label.grid(row=0, column=2, padx=10, pady=(20, 8), sticky="w")
-
-    self.item_rate = ctk.CTkEntry(
-        items_frame,
-        placeholder_text="Price",
-        font=ctk.CTkFont(size=12),
-        height=38,
-        corner_radius=10,
-        border_width=2,
-        border_color=entry_border,
-        fg_color=entry_fg
-    )
-    self.item_rate.grid(row=1, column=2, padx=10, pady=(0, 18), sticky="ew")
+        # Highlight on Focus
+        entry.bind("<FocusIn>", lambda e, f=entry: f.configure(border_color=colors["focus"]))
+        entry.bind("<FocusOut>", lambda e, f=entry: f.configure(border_color=colors["entry_border"]))
 
     # Action Label
-    action_label = ctk.CTkLabel(items_frame, text="Action",
-                                font=ctk.CTkFont(size=12, weight="bold"),
-                                text_color=("#212121", "#E8E8E8"))
+    action_label = ctk.CTkLabel(
+        items_frame,
+        text="Action",
+        font=ctk.CTkFont(size=12, weight="bold"),
+        text_color=colors["text_primary"]
+    )
     action_label.grid(row=0, column=3, padx=(10, 20), pady=(20, 8), sticky="w")
 
     # Add Button
@@ -101,14 +114,10 @@ def add_item_section(self):
         font=ctk.CTkFont(size=12, weight="bold"),
         height=38,
         width=90,
-        fg_color=("#2E8B57", "#40E0D0"),
-        hover_color=("#228B22", "#20B2AA"),
-        corner_radius=10,
+        fg_color=colors["success"],
+        hover_color=colors["success_hover"],
+        corner_radius=8,
+        text_color=colors["text_primary"],
         command=self.controller.add_items
     )
     add_items.grid(row=1, column=3, padx=(10, 20), pady=(0, 18), sticky="ew")
-
-    # Highlight on Focus
-    for field in [self.item_name, self.item_quantity, self.item_rate]:
-        field.bind("<FocusIn>", lambda e, f=field: f.configure(border_color="#00BFFF"))
-        field.bind("<FocusOut>", lambda e, f=field: f.configure(border_color=entry_border))

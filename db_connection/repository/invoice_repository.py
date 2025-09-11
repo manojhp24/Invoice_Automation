@@ -1,6 +1,7 @@
 from db_connection.connection import get_connection
 from db_connection.queries.queries import (SAVE_INVOICE, SAVE_INVOICE_ITEMS, SAVE_CUSTOMER, SAVE_PRODUCT_IF_NOT_EXISTS,
                                            GET_PRODUCT_ID,SAVE_NO_GST_CUSTOMER)
+from db_connection.queries.fetch_customer_data import (FETCH_CUST_WITH_GST,FETCH_CUST_WITHOUT_GST,FETCH_ALL)
 
 
 class InvoiceRepository:
@@ -31,6 +32,20 @@ class InvoiceRepository:
     def save_invoice_item(self, invoice_id, product_id, quantity, rate, amount):
         self.cur.execute(SAVE_INVOICE_ITEMS, (invoice_id, product_id, quantity, rate, amount))
         self.conn.commit()
+
+    def fetch_gst_customer(self):
+        self.cur.execute(FETCH_CUST_WITH_GST)
+        return self.cur.fetchall()
+
+    def fetch_without_gst_customer(self):
+        self.cur.execute(FETCH_CUST_WITHOUT_GST)
+        return self.cur.fetchall()
+
+    def fetch_all_cust(self):
+        self.cur.execute(FETCH_ALL)
+        return self.cur.fetchall()
+
+
 
     def save_no_gst_customer(self,customer):
         self.cur.execute(SAVE_NO_GST_CUSTOMER,(customer.name, customer.mobile, customer.email, customer.address))

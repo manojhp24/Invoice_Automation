@@ -1,4 +1,8 @@
+import os
+import sys
+import threading
 from tkinter import messagebox
+import customtkinter as ctk
 from model.item_model import Item
 from model.customer_model import Customer
 from db_connection.repository.invoice_repository import InvoiceRepository
@@ -128,27 +132,19 @@ class ItemController:
         customer_gst = self.view.gst_entry.get()
 
         if not customer_name or not customer_mobile or not address:
-            messagebox.showerror("Error", "Please fill in all required fields.")
+            ctk.CTkMessagebox.show_error("Error", "Please fill in all required fields.")
             return
 
-        # Show progress bar
-        self.view.progress_label.grid()
-        self.view.popup_progress_bar.set(0)
-        self.view.popup_progress_bar.grid()
-        self.view.update_idletasks()
+        # 🔹 DB operations in main thread (safe)
+        customer = Customer(
+            name=customer_name,
+            mobile=customer_mobile,
+            address=address,
+            email=customer_email,
+            customer_gst=customer_gst
+        )
 
-        # Callback function to update progress
-        def update_progress(value):
-            self.view.popup_progress_bar.set(value)
-            self.view.update_idletasks()
-
-        customer = Customer(name=customer_name, mobile=customer_mobile, address=address, email=customer_email,customer_gst=customer_gst)
-
-        if customer.customer_gst and customer.customer_gst.strip():
-            customer_id = self.invoiceRepo.save_customer(customer)
-        else:
-            customer_id = self.invoiceRepo.save_no_gst_customer(customer)
-
+        customer_id = self.invoiceRepo.save_customer(customer)
         invoice_id = self.invoiceRepo.save_invoice(customer_id, datetime.now().strftime("%Y-%m-%d"))
 
         for item in self.items:
@@ -159,32 +155,72 @@ class ItemController:
             "customer_name": customer.name,
             "address": customer.address,
             "mobile": customer.mobile,
-            "customer_gst":customer.customer_gst,
+            "customer_gst": customer.customer_gst,
             "invoice_no": invoice_id,
             "items": [
-                {
-                    "name": item.name,
-                    "rate": item.rate,
-                    "quantity": item.quantity,
-                    "amount": item.amount,
-                }
+                {"name": item.name, "rate": item.rate, "quantity": item.quantity, "amount": item.amount}
                 for item in self.items
             ],
             "gross_total": sum(item.amount for item in self.items),
             "total": sum(item.amount for item in self.items) * 1.18
         }
 
-        generate_invoice_pdf(invoice_data, progress_callback=update_progress)
+        # 🔹 Popup progress window
+        progress_win = ctk.CTkToplevel(self.view)
+        progress_win.title("Generating Invoice")
+        progress_win.geometry("420x200")
+        progress_win.resizable(False, False)
+        progress_win.grab_set()
 
-        self.view.popup_progress_bar.set(1.0)
-        self.view.update_idletasks()
+        lbl = ctk.CTkLabel(progress_win, text="Generating invoice...", font=ctk.CTkFont(size=14))
+        lbl.pack(pady=(20, 10))
 
-        # Hide progress after finish
-        self.view.popup_progress_bar.grid_remove()
-        self.view.progress_label.grid_remove()
+        progress_bar = ctk.CTkProgressBar(progress_win, width=300)
+        progress_bar.set(0)
+        progress_bar.pack(pady=10)
 
-        self.items.clear()
-        messagebox.showinfo("Success", f"Invoice created successfully!\nInvoice ID: {invoice_id}")
+        def open_file(path):
+            """Open file with system default app (Word or PDF)."""
+            if sys.platform == "win32":
+                os.startfile(path)
+            elif sys.platform == "darwin":
+                os.system(f"open '{path}'")
+            else:
+                os.system(f"xdg-open '{path}'")
+
+        # ✅ FIX: define update_progress
+        def update_progress(value: float):
+            progress_win.after(0, lambda: progress_bar.set(value))
+
+        def worker():
+            # Now generate_invoice_pdf must return (pdf_path, docx_path)
+            pdf_path, docx_path = generate_invoice_pdf(invoice_data, progress_callback=update_progress)
+
+            def show_success():
+                lbl.configure(text=f"✅ Invoice created successfully!\nInvoice ID: {invoice_id}")
+                progress_bar.pack_forget()
+
+                # 📄 View PDF button
+                if pdf_path and os.path.exists(pdf_path):
+                    ctk.CTkButton(
+                        progress_win, text="📄 View PDF",
+                        fg_color="#4C78E8", hover_color="#3A66D0",
+                        command=lambda: open_file(pdf_path)
+                    ).pack(pady=8)
+
+                # 📝 View Word button
+                if docx_path and os.path.exists(docx_path):
+                    ctk.CTkButton(
+                        progress_win, text="📝 Open in Word",
+                        fg_color="#2E7D32", hover_color="#1B5E20",
+                        command=lambda: open_file(docx_path)
+                    ).pack(pady=8)
+
+            self.items.clear()
+            progress_win.after(0, show_success)
+
+        threading.Thread(target=worker, daemon=True).start()
+
         return invoice_id
 
 

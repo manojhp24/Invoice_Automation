@@ -1,3 +1,0 @@
-FETCH_INVOICE = """
-
-"""
