@@ -62,4 +62,20 @@ pip install -r requirements.txt
 ```bash
 python main.py
 ```
+## 📸 Screenshots
+
+### Customer Entry Form
+![Customer Entry](project_screen_shots/Customer_details_entry_form.png)
+
+### Product Entry Form
+![Product Entry](project_screen_shots/Product_entry_form.png)
+
+### Invoice Generating
+![Invoice Generating](project_screen_shots/Invoice_generating.png)
+
+### Invoice Generated Successfully
+![Success](project_screen_shots/invoice_successfully_generated.png)
+
+### Sample Invoice
+![Sample Invoice](project_screen_shots/sampel_invoice.png)
 
