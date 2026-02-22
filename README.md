@@ -1,5 +1,12 @@
 # Invoice Automation 🧾
 
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![CustomTkinter](https://img.shields.io/badge/CustomTkinter-GUI%20Framework-1F6AA5?style=for-the-badge)
+![SQLite](https://img.shields.io/badge/SQLite-Database-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
+![PDF Generator](https://img.shields.io/badge/PDF-Automation-red?style=for-the-badge)
+![MVC](https://img.shields.io/badge/MVC-Architecture-darkgreen?style=for-the-badge)
+![Desktop App](https://img.shields.io/badge/Desktop-Application-blueviolet?style=for-the-badge)
+
 A desktop-based Invoice Automation system built using **Python** and **CustomTkinter**, with functionality to generate PDF invoices.
 
 ---
